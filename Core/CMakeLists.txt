@@ -7,5 +7,5 @@
 # This project contains the core functionalities of the InfinityLearn project.
 #--------------------------------------------------------------------------------------------
 
-# Define the core library
+# Define the Core project
 project(Core)

@@ -8,8 +8,8 @@
 #--------------------------------------------------------------------------------------------
 cmake_minimum_required (VERSION 3.10)
 
- # Enable hot reload (edit and continue) if available
- include (cmake/HotReload.cmake)
+# Enable hot reload (edit and continue) if available
+include (cmake/HotReload.cmake)
 
 # Main project configuration
 project ("InfinityLearn")
