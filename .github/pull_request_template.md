@@ -1,5 +1,5 @@
 **Description**
-A short  description of this PR.
+A short description of this PR.
 
 **What is the current behavior, before this PR?**
 ..
@@ -19,11 +19,11 @@ Closes #NUMBER
 **Reviewer Suggestions**
 ..
 
-**Reminder of our Reviewer Checklis**
+**Reminder of our Reviewer Checklist**
 Code exhibits correct behavior.
 Code conforms to our style and standards.
 The purpose/intent of all code blocks is clear.
 The contracts of all code constructs are clear.
-Automated tests exercise the affected the code.
+Automated tests exercise the affected code.
 Documentation has been updated to reflect the changes.
 CI jobs are green.
