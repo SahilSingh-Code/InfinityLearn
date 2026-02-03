@@ -15,7 +15,7 @@ Using a native, low-level language provides:
 - explicit visibility into performance costs
 - fine-grained optimization opportunities
 - ability to reason about behavior close to the underlying machine
- 
+
 This project treats machine learning as a systems problem. Implementing algorithms in C++ forces explicit handling of details that are often hidden in higher-level frameworks, including data movement, numerical precision, and control flow.
 
 High-level libraries may be used later for comparison or interoperability, but the core implementation remains native and explicit.
