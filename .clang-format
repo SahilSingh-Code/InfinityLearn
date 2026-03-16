@@ -1,0 +1,37 @@
+---
+# Based on Google style with customizations
+BasedOnStyle: Google
+Language:     Cpp
+
+# Indent with 4 spaces
+IndentWidth: 4
+ContinuationIndentWidth: 4
+
+# Pointer and reference alignment with type
+PointerAlignment: Left
+ReferenceAlignment: Left
+
+# All curly braces on their own line (Allman style)
+BreakBeforeBraces: Allman
+
+# Keep a maximum of 2 consecutive empty lines
+MaxEmptyLinesToKeep: 2
+
+# Break constructor initializer lists before the comma
+BreakConstructorInitializersBeforeComma: true
+
+# Include sorting: local ("") first, then system (<>), alphabetically
+SortIncludes: CaseSensitive
+IncludeBlocks: Merge
+IncludeCategories:
+  - Regex:           '^".*"'
+    Priority:        1
+  - Regex:           '^<.*>'
+    Priority:        2
+
+# Additional formatting options
+ColumnLimit: 80
+AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: Always
+AllowShortLoopsOnASingleLine: false
+AllowShortBlocksOnASingleLine: Never
