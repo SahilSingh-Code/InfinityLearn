@@ -11,7 +11,7 @@
 project(Core)
 
 # Create a static library for the Core module
-add_library(Core
+add_library(Core STATIC
     Logging.cpp
     Logging.h
 )

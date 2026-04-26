@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // Logging.h
 //
-// This is Infinity Learn's logging system. It provides a simple interface for
+// This is InfinityLearn's logging system. It provides a simple interface for
 // logging messages to the console and to files.
 //
 // Which level of messages are printed depends on the build type, which can be

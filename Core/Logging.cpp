@@ -6,7 +6,7 @@
 
 // Includes
 #include "Logging.h"
-#include <fstream>   // For std::ofstre
+#include <fstream>   // For std::ofstream
 #include <iostream>  // For std::cout and std::cerr
 
 namespace InfinityLearn
@@ -55,7 +55,7 @@ void Log(LogLevel level, const std::string& message)
             return;
     }
 
-    std::cout << logLevel << ": " << message << std::endl;
+    std::cout << logLevel << ": " << message << "\n";
 }
 
 
