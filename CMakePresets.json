@@ -26,7 +26,7 @@
                 "strategy": "external"
             },
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug"
+                "CMAKE_BUILD_TYPE": "DEBUG"
             }
         },
         {
@@ -34,7 +34,23 @@
             "displayName": "x64 Release",
             "inherits": "x64-debug",
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Release"
+                "CMAKE_BUILD_TYPE": "RELEASE"
+            }
+        },
+        {
+            "name": "x64-develop",
+            "displayName": "x64 Develop",
+            "inherits": "x64-debug",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "DEVELOP"
+            }
+        },
+        {
+            "name": "x64-performance",
+            "displayName": "x64 Performance",
+            "inherits": "x64-debug",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "PERFORMANCE"
             }
         },
         {
@@ -46,7 +62,7 @@
                 "strategy": "external"
             },
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug"
+                "CMAKE_BUILD_TYPE": "DEBUG"
             }
         },
         {
@@ -54,7 +70,23 @@
             "displayName": "x86 Release",
             "inherits": "x86-debug",
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Release"
+                "CMAKE_BUILD_TYPE": "RELEASE"
+            }
+        },
+        {
+            "name": "x86-develop",
+            "displayName": "x86 Develop",
+            "inherits": "x86-debug",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "DEVELOP"
+            }
+        },
+        {
+            "name": "x86-performance",
+            "displayName": "x86 Performance",
+            "inherits": "x86-debug",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "PERFORMANCE"
             }
         }
     ]

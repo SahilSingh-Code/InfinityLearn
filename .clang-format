@@ -35,3 +35,4 @@ AllowShortFunctionsOnASingleLine: None
 AllowShortIfStatementsOnASingleLine: Always
 AllowShortLoopsOnASingleLine: false
 AllowShortBlocksOnASingleLine: Never
+InsertBraces: true
