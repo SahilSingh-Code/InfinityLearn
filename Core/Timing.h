@@ -9,7 +9,7 @@
 
 #include "Logging.h"
 #include <chrono>
-
+#include <string>
 namespace InfinityLearn
 {
 
@@ -39,7 +39,7 @@ class Timer
     /// Figure out the elapsed time in seconds since the timer was started or
     /// last reset.
     /// </summary>
-    /// <returns> The elpased time in seconds. </returns>
+    /// <returns> The elapsed time in seconds. </returns>
     double elapsed() const
     {
         return std::chrono::duration<double>(
@@ -67,25 +67,36 @@ class ScopedTimer
     /// </summary>
     /// <param name="name">The name of the scope to be displayed when
     /// logged</param>
-    explicit ScopedTimer(const char* name) : m_timer(), m_name(name)
+    explicit ScopedTimer(const char* name) : m_timer(), m_name(name ? name : "<unnamed>")
     {
     }
+
+    ScopedTimer(const ScopedTimer&) = delete;
+    ScopedTimer& operator=(const ScopedTimer&) = delete;
+    ScopedTimer(ScopedTimer&&) = delete;
+    ScopedTimer& operator=(ScopedTimer&&) = delete;
 
     /// <summary>
     /// When destroyed, log the elapsed time since the timer was created with
     /// the provided name. The log will be at the PERFORMANCE log level.
     /// </summary>
-    ~ScopedTimer()
+    ~ScopedTimer() noexcept
     {
-        Log(LogLevel::PERFORMANCE, "Timing: " + std::string(m_name) + " took " +
-                                       std::to_string(m_timer.elapsed()) +
-                                       " seconds");
+        try
+        {
+            Log(LogLevel::PERFORMANCE,
+                std::string("Timing: ") + m_name + " took " +
+                    std::to_string(m_timer.elapsed()) + " seconds");
+        }
+        catch (...)
+        {
+            // Destructors should not emit exceptions.
+        }
     }
 
    private:
     Timer m_timer;
-    const char* m_name;
-};
+    std::string m_name;
 }  // namespace InfinityLearn
 
 #endif  // INFINITYLEARN_TIMING_H
