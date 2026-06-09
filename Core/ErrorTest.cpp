@@ -13,9 +13,7 @@
 #include <exception>
 #include <iostream>
 
-// Use the InfinityLearn namespace to avoid having to prefix the macros and
-// functions with "InfinityLearn::"
-using namespace InfinityLearn;
+// Macros from Error.h are globally visible; no namespace import needed.
 
 namespace
 {
@@ -35,30 +33,24 @@ int main()
 {
     std::cout << "Running error handling sanity checks..." << std::endl;
 
-    bool assertPassWorks = true;
     IL_ASSERT(true, "IL_ASSERT should not fail for a true condition");
-    PrintResult("IL_ASSERT(true)", assertPassWorks);
+    PrintResult("IL_ASSERT(true)", true);
 
-    bool assertDebugPassWorks = true;
     IL_ASSERT_DEBUG(true,
                     "IL_ASSERT_DEBUG should not fail for a true condition");
-    PrintResult("IL_ASSERT_DEBUG(true)", assertDebugPassWorks);
+    PrintResult("IL_ASSERT_DEBUG(true)", true);
 
-    bool verifyPassWorks = true;
     IL_VERIFY(true, "IL_VERIFY should not fail for a true condition");
-    PrintResult("IL_VERIFY(true)", verifyPassWorks);
+    PrintResult("IL_VERIFY(true)", true);
 
-    bool requirePassWorks = true;
     IL_REQUIRE(true, "IL_REQUIRE should not fail for a true condition");
-    PrintResult("IL_REQUIRE(true)", requirePassWorks);
+    PrintResult("IL_REQUIRE(true)", true);
 
-    bool ensurePassWorks = true;
     IL_ENSURE(true, "IL_ENSURE should not fail for a true condition");
-    PrintResult("IL_ENSURE(true)", ensurePassWorks);
+    PrintResult("IL_ENSURE(true)", true);
 
-    bool checkPassWorks = true;
     IL_CHECK(true, "IL_CHECK should not fail for a true condition");
-    PrintResult("IL_CHECK(true)", checkPassWorks);
+    PrintResult("IL_CHECK(true)", true);
 
     bool checkFailureThrows = false;
     try
