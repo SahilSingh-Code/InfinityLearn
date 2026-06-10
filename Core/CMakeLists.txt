@@ -13,7 +13,8 @@ project(Core)
 # Create a static library for the Core module
 add_library(Core STATIC
     Logging.cpp Logging.h
-    Error.cpp Error.h)
+    Error.cpp Error.h
+    Timing.h)
 
 # Include the current source directory for header files
 target_include_directories(Core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
@@ -24,6 +25,7 @@ target_link_libraries(Core
 )
 
 # ---- Test executables ----
+
 # This will just call the core logging functionality to ensure it works as expected.
 # This is not a full unit test suite, but it serves as a basic sanity check for the logging system
 add_executable(CoreLoggingTest
