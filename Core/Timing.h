@@ -65,8 +65,8 @@ class ScopedTimer
     /// Create a scoped timer that will automatically log the elapsed time when
     /// it goes out of scope. The timer starts immediately upon construction.
     /// </summary>
-    /// <param name="name">The name of the scope to be displayed when
-    /// logged</param>
+    /// <param name="name">The name of the scope to be displayed when timing is
+    /// shown  in the logs. If not provided, it defaults to "<unnamed>".</param>
     explicit ScopedTimer(const char* name)
         : m_timer(), m_name(name ? name : "<unnamed>")
     {
