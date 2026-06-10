@@ -23,7 +23,7 @@ class Timer
     /// <summary>
     /// Create a timer and start timing immediately.
     /// </summary>
-    Timer() : m_start_time(std::chrono::high_resolution_clock::now())
+    Timer() : m_start_time(std::chrono::steady_clock::now())
     {
     }
 
@@ -32,7 +32,7 @@ class Timer
     /// </summary>
     void reset()
     {
-        m_start_time = std::chrono::high_resolution_clock::now();
+        m_start_time = std::chrono::steady_clock::now();
     }
 
     /// <summary>
@@ -42,13 +42,13 @@ class Timer
     /// <returns> The elapsed time in seconds. </returns>
     double elapsed() const
     {
-        return std::chrono::duration<double>(
-                   std::chrono::high_resolution_clock::now() - m_start_time)
+        return std::chrono::duration<double>(std::chrono::steady_clock::now() -
+                                             m_start_time)
             .count();
     }
 
    private:
-    std::chrono::high_resolution_clock::time_point m_start_time;
+    std::chrono::steady_clock::time_point m_start_time;
 };
 
 /// <summary>
@@ -67,7 +67,8 @@ class ScopedTimer
     /// </summary>
     /// <param name="name">The name of the scope to be displayed when
     /// logged</param>
-    explicit ScopedTimer(const char* name) : m_timer(), m_name(name ? name : "<unnamed>")
+    explicit ScopedTimer(const char* name)
+        : m_timer(), m_name(name ? name : "<unnamed>")
     {
     }
 
@@ -97,6 +98,7 @@ class ScopedTimer
    private:
     Timer m_timer;
     std::string m_name;
-}  // namespace InfinityLearn
+};
 
+}  // namespace InfinityLearn
 #endif  // INFINITYLEARN_TIMING_H
