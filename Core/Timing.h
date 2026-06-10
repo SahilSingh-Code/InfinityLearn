@@ -4,8 +4,7 @@
 // project.
 //------------------------------------------------------------------------------
 
-#ifndef INFINITYLEARN_TIMING_H
-#define INFINITYLEARN_TIMING_H
+#pragma once
 
 #include "Logging.h"
 #include <chrono>
@@ -101,4 +100,3 @@ class ScopedTimer
 };
 
 }  // namespace InfinityLearn
-#endif  // INFINITYLEARN_TIMING_H
