@@ -12,8 +12,9 @@ project(Core)
 
 # Create a static library for the Core module
 add_library(Core STATIC
-    Logging.cpp Logging.h
     Error.cpp Error.h
+    Logging.cpp Logging.h
+    Random.cpp Random.h
     Timing.h)
 
 # Include the current source directory for header files
@@ -42,5 +43,14 @@ add_executable(CoreErrorCheck
     ErrorTest.cpp)
 
 target_link_libraries(CoreErrorCheck
+    PRIVATE Core
+)
+
+# This will test the random number generation functionality of the Core module.
+# This is not a full unit test suite, but it serves as a basic sanity check for the random number generation system.
+add_executable(CoreRandomCheck
+    RandomTest.cpp)
+
+target_link_libraries(CoreRandomCheck
     PRIVATE Core
 )
