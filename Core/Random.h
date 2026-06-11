@@ -27,8 +27,7 @@ class Xoshiro256
     /// Constructs a new Xoshiro256 random number generator.
     /// </summary>
     /// <param name="seed">The seed value to initialize the generator.</param>
-    Xoshiro256(Seed seed);
-
+    explicit Xoshiro256(Seed seed);
     /// <summary>
     /// Generates the next random number.
     /// </summary>
