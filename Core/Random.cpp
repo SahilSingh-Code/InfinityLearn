@@ -3,8 +3,6 @@
 //-----------------------------------------------------------------------------
 
 #include "Random.h"
-#include "Error.h"
-#include <type_traits>
 
 namespace InfinityLearn
 {
@@ -51,29 +49,6 @@ Xoshiro256::Result Xoshiro256::SplitMix64::next()
     z = (z ^ (z >> 30)) * 0xBF58476D1CE4E5B9ull;
     z = (z ^ (z >> 27)) * 0x94D049BB133111EBull;
     return z ^ (z >> 31);
-}
-
-template <typename T>
-T randomish(RNG& rng, T min, T max)
-{
-    IL_ASSERT((std::is_same<T, int>::value || std::is_same<T, float>::value ||
-               std::is_same<T, double>::value),
-              "randomish only supports int, float, and double types");
-
-    if constexpr (std::is_same<T, int>::value)
-    {
-        const std::uint64_t range = static_cast<std::uint64_t>(max - min + 1);
-        const std::uint64_t value = rng.next() % range;
-        return static_cast<int>(min + static_cast<int>(value));
-    }
-    else if constexpr (std::is_same<T, float>::value ||
-                       std::is_same<T, double>::value)
-    {
-        const T length =
-            static_cast<T>(rng.next()) /
-            static_cast<T>(std::numeric_limits<std::uint64_t>::max());
-        return min + length * (max - min);
-    }
 }
 
 }  // namespace InfinityLearn

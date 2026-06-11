@@ -4,8 +4,8 @@
 // Basic smoke test executable for InfinityLearn's random generation.
 //-----------------------------------------------------------------------------
 
+#include "Error.h"
 #include "Random.h"
-#include <cassert>
 #include <iostream>
 #include <vector>
 
@@ -53,8 +53,8 @@ int main()
             }
         }
 
-        assert(found_different_value &&
-               "RNG generated identical values repeatedly.");
+        IL_VERIFY(found_different_value,
+                  "RNG generated identical values repeatedly.");
 
         std::cout << "Generated sequence:\n";
 
@@ -78,7 +78,7 @@ int main()
             const auto a = rng_a.next();
             const auto b = rng_b.next();
 
-            assert(a == b && "Same seed did not generate the same sequence.");
+            IL_ASSERT(a == b, "Same seed did not generate the same sequence.");
         }
 
         std::cout << "Same seed reproducibility smoke test passed.\n";
@@ -107,13 +107,39 @@ int main()
             }
         }
 
-        assert(found_difference &&
-               "Different seeds generated the same sequence.");
+        IL_ASSERT(found_difference,
+                  "Different seeds generated the same sequence.");
 
         std::cout << "Different seed smoke test passed.\n";
     }
 
-    std::cout << "All RNG smoke tests passed.\n";
+    // -------------------------------------------------------------------------
+    // Test 5: Generate a series of randomish numbers
+    // -------------------------------------------------------------------------
+    {
+        RNG rng(12345);
+        constexpr int num_values = 16;
+        std::vector<double> double_numbers = {randomish<double>(rng)};
+        std::vector<float> float_numbers = {randomish<float>(rng)};
+        std::vector<int> int_numbers = {randomish<int>(rng, 0, 1000)};
 
+        for (int i = 1; i < num_values; ++i)
+        {
+            double_numbers.push_back(randomish<double>(rng));
+            float_numbers.push_back(randomish<float>(rng));
+            int_numbers.push_back(randomish<int>(rng, 0, 1000));
+
+            IL_CHECK(double_numbers[i] != double_numbers[0],
+                     "Randomish generated the same number.");
+            IL_CHECK(float_numbers[i] != float_numbers[0],
+                     "Randomish generated the same number.");
+            IL_CHECK(int_numbers[i] != int_numbers[0],
+                     "Randomish generated the same number.");
+        }
+
+        std::cout << "Randomish value generation test passed.\n";
+    }
+
+    std::cout << "All RNG smoke tests passed.\n";
     return 0;
 }

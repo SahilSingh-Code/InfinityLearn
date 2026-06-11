@@ -4,7 +4,10 @@
 //-----------------------------------------------------------------------------
 #pragma once
 
+#include "Error.h"
 #include <cstdint>
+#include <limits>
+#include <type_traits>
 
 namespace InfinityLearn
 {
@@ -41,7 +44,7 @@ class Xoshiro256
         /// </summary>
         /// <param name="seed">The seed value to initialize the
         /// generator.</param>
-        explicit SplitMix64(std::uint64_t seed) : m_state(seed) {};
+        explicit SplitMix64(Result seed) : m_state(seed) {};
 
         /// <summary>
         /// Generates the next random number.
@@ -77,6 +80,29 @@ using RNG = Xoshiro256;
 /// <param name="rng">The random number generator to use</param>
 /// <returns>A random number in the designated range</returns>
 template <typename T>
-T randomish(RNG& rng, T min = 0, T max = 1);
+T randomish(RNG& rng, T min = T{0}, T max = T{1})
+{
+    IL_ASSERT((std::is_same<T, int>::value || std::is_same<T, float>::value ||
+               std::is_same<T, double>::value),
+              "randomish only supports int, float, and double types");
 
+    IL_ASSERT(min <= max, "randomish requires min <= max (min="
+                              << min << ", max=" << max << ")");
+
+    if constexpr (std::is_same<T, int>::value)
+    {
+        const auto min_i = static_cast<std::int64_t>(min);
+        const auto max_i = static_cast<std::int64_t>(max);
+        const RNG::Result range = static_cast<RNG::Result>(max_i - min_i + 1);
+        const RNG::Result value = rng.next() % range;
+        return static_cast<int>(min_i + static_cast<std::int64_t>(value));
+    }
+    else
+    {
+        const T unit = static_cast<T>(rng.next()) /
+                       static_cast<T>(std::numeric_limits<RNG::Result>::max());
+
+        return min + unit * (max - min);
+    }
+}
 }  // namespace InfinityLearn
