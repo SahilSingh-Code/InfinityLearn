@@ -81,9 +81,9 @@ using RNG = Xoshiro256;
 template <typename T>
 T randomish(RNG& rng, T min = T{0}, T max = T{1})
 {
-    IL_ASSERT((std::is_same<T, int>::value || std::is_same<T, float>::value ||
-               std::is_same<T, double>::value),
-              "randomish only supports int, float, and double types");
+    static_assert(std::is_same_v<T, int> || std::is_same_v<T, float> ||
+                      std::is_same_v<T, double>,
+                  "randomish only supports int, float, and double types");
 
     IL_ASSERT(min <= max, "randomish requires min <= max (min="
                               << min << ", max=" << max << ")");
