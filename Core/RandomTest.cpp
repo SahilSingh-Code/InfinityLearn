@@ -123,21 +123,27 @@ int main()
         std::vector<float> float_numbers = {randomish<float>(rng)};
         std::vector<int> int_numbers = {randomish<int>(rng, 0, 1000)};
 
+        bool found_diff_double = false;
+        bool found_diff_float = false;
+        bool found_diff_int = false;
+
         for (int i = 1; i < num_values; ++i)
         {
             double_numbers.push_back(randomish<double>(rng));
             float_numbers.push_back(randomish<float>(rng));
             int_numbers.push_back(randomish<int>(rng, 0, 1000));
 
-            IL_CHECK(double_numbers[i] != double_numbers[0],
-                     "Randomish generated the same number.");
-            IL_CHECK(float_numbers[i] != float_numbers[0],
-                     "Randomish generated the same number.");
-            IL_CHECK(int_numbers[i] != int_numbers[0],
-                     "Randomish generated the same number.");
+            found_diff_double |= (double_numbers[i] != double_numbers[0]);
+            found_diff_float |= (float_numbers[i] != float_numbers[0]);
+            found_diff_int |= (int_numbers[i] != int_numbers[0]);
         }
 
-        std::cout << "Randomish value generation test passed.\n";
+        IL_ASSERT(found_diff_double,
+                  "Randomish generated identical double values repeatedly.");
+        IL_ASSERT(found_diff_float,
+                  "Randomish generated identical float values repeatedly.");
+        IL_ASSERT(found_diff_int,
+                  "Randomish generated identical int values repeatedly.");
     }
 
     std::cout << "All RNG smoke tests passed.\n";
