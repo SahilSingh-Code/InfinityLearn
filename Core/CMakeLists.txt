@@ -2,7 +2,7 @@
 # InfinityLearn / Core
 #
 # Author: Sahil Singh
-# Date: January 2026
+# Date: June 2026
 #
 # This project contains the core functionalities of the InfinityLearn project.
 #--------------------------------------------------------------------------------------------
@@ -24,6 +24,12 @@ target_include_directories(Core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(Core
     PUBLIC InfinityLearnConfig
 )
+
+# Add the TestUtils subdirectory for utility functions used in unit tests
+add_subdirectory(TestUtils)
+
+# Add the CoreTests subdirectory for unit tests related to the Core module
+add_subdirectory(CoreTests)
 
 # ---- Test executables ----
 

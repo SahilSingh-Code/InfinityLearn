@@ -30,9 +30,11 @@ IncludeCategories:
     Priority:        2
 
 # Additional formatting options
-ColumnLimit: 80
+ColumnLimit: 120
 AllowShortFunctionsOnASingleLine: None
 AllowShortIfStatementsOnASingleLine: Always
 AllowShortLoopsOnASingleLine: false
 AllowShortBlocksOnASingleLine: Never
 InsertBraces: true
+SpacesBeforeTrailingComments: 1
+AlignTrailingComments: true

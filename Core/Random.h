@@ -81,12 +81,10 @@ using RNG = Xoshiro256;
 template <typename T>
 T randomish(RNG& rng, T min = T{0}, T max = T{1})
 {
-    static_assert(std::is_same_v<T, int> || std::is_same_v<T, float> ||
-                      std::is_same_v<T, double>,
+    static_assert(std::is_same_v<T, int> || std::is_same_v<T, float> || std::is_same_v<T, double>,
                   "randomish only supports int, float, and double types");
 
-    IL_ASSERT(min <= max, "randomish requires min <= max (min="
-                              << min << ", max=" << max << ")");
+    IL_ASSERT(min <= max, "randomish requires min <= max (min=" << min << ", max=" << max << ")");
 
     if constexpr (std::is_same<T, int>::value)
     {
@@ -98,10 +96,9 @@ T randomish(RNG& rng, T min = T{0}, T max = T{1})
     }
     else
     {
-        const T unit = static_cast<T>(rng.next()) /
-                       static_cast<T>(std::numeric_limits<RNG::Result>::max());
+        const T unit = static_cast<T>(rng.next()) / static_cast<T>(std::numeric_limits<RNG::Result>::max());
 
         return min + unit * (max - min);
     }
 }
-}  // namespace InfinityLearn
+} // namespace InfinityLearn
