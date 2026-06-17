@@ -1,0 +1,54 @@
+name: CI
+
+permissions:
+   contents: read
+
+on:
+  push:
+    branches:
+      - "**"
+
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    name: Windows ${{ matrix.config }}
+    runs-on: windows-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - Debug
+          - Develop
+          - Release
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up MSVC developer command prompt
+        # Pinned from ilammy/msvc-dev-cmd@v1
+        uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756
+
+      - name: Show tool versions
+        run: |
+          cmake --version
+          ninja --version
+
+      - name: Show MSVC version
+        shell: cmd
+        run: cl /Bv || exit /b 0
+
+      - name: Configure CMake
+        run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=${{ matrix.config }}
+
+      - name: Build
+        run: cmake --build build --parallel
+
+      - name: Run tests
+        run: ctest --test-dir build --output-on-failure
