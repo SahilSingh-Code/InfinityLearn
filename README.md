@@ -29,9 +29,9 @@ This project serves both as a learning vehicle and as a demonstration of senior-
 **Infrastructure**
 - [x] CMake-based build system
 - [x] Formatting and static checks
-- [ ] Unit test harness
-- [ ] Logging / timing / error utilities
-- [ ] Continuous integration
+- [x] Unit test harness
+- [x] Logging / timing / error utilities
+- [x] Continuous integration
 
 **Core ML (in progress)**
 - [ ] Minimal tensor / math primitives
