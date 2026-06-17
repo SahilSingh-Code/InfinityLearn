@@ -17,5 +17,5 @@ target_include_directories(CoreTestUtils
 target_link_libraries(CoreTestUtils
     INTERFACE
         Core
-        Catch2::Catch2WithMain
+        Catch2::Catch2
 )

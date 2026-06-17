@@ -6,7 +6,7 @@
 #
 # This CMakeLists describes the overall project configuration for the InfinityLearn project.
 #--------------------------------------------------------------------------------------------
-cmake_minimum_required (VERSION 3.10)
+cmake_minimum_required (VERSION 3.14)
 
 # Define the supported build configurations
 set(CMAKE_CONFIGURATION_TYPES "Debug;Develop;Release;Performance" CACHE STRING "" FORCE)
@@ -48,7 +48,7 @@ FetchContent_MakeAvailable(Catch2)
 
 # Make Catch2's CMake helper scripts available.
 # This gives us catch_discover_tests(...).
-list(APPEND CMAKE_MODULE_PATH "${catch2_SOURCE_DIR}/extras")
+list(APPEND CMAKE_MODULE_PATH "${Catch2_SOURCE_DIR}/extras")
 
 include(CTest)
 include(Catch)
