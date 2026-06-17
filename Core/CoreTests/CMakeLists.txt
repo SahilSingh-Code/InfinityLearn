@@ -10,8 +10,8 @@
 #--------------------------------------------------------------------------------------------
 
 add_executable(CoreTests
-    RandomishTests.cpp
-    TimerTests.cpp
+    "RandomishTests.cpp"
+    "TimerTests.cpp"
 )
 
 target_link_libraries(CoreTests
