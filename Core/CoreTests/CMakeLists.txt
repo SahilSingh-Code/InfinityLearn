@@ -10,8 +10,9 @@
 #--------------------------------------------------------------------------------------------
 
 add_executable(CoreTests
-    "RandomishTests.cpp"
-    "TimerTests.cpp"
+    ParallelizationTests.cpp
+    RandomishTests.cpp
+    TimerTests.cpp
 )
 
 target_link_libraries(CoreTests
@@ -19,6 +20,7 @@ target_link_libraries(CoreTests
         Core
         CoreTestUtils
         Catch2::Catch2WithMain
+        TBB::tbb
 )
 
 include(Catch)
