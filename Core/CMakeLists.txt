@@ -14,6 +14,7 @@ project(Core)
 add_library(Core STATIC
     Error.cpp Error.h
     Logging.cpp Logging.h
+    Parallelization.h
     Random.cpp Random.h
     Timing.h)
 
@@ -23,6 +24,7 @@ target_include_directories(Core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 # Link the Core library with the InfinityLearnConfig interface library to inherit the compile definitions
 target_link_libraries(Core
     PUBLIC InfinityLearnConfig
+    PRIVATE TBB::tbb
 )
 
 # Add the TestUtils subdirectory for utility functions used in unit tests
