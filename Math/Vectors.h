@@ -4,12 +4,15 @@
 // Core vector utilities for InfinityLearn.
 //-----------------------------------------------------------------------------------------------------------------------
 
+#pragma once
+
 #include <Core/Error.h>           // IL_CHECK
 #include <Core/Parallelization.h> // Parallel::Range, Parallel::parallelFor, etc
 #include <algorithm>              // std::clamp, std::max, std::min
 #include <cmath>                  // std::abs, std::cos, std::exp, std::isfinite, std::isnan, std::log, std::log10,
                                   // std::pow, std::sin, std::sqrt, std::tan
 #include <initializer_list>       // std::initializer_list
+#include <type_traits>            //std::is_floating_point_v<
 #include <utility>                // std::move, std::forward
 #include <vector>                 // std::vector
 
@@ -375,7 +378,9 @@ class VectorBase
     class ElementWiseView
     {
        public:
-        explicit ElementWiseView(const Derived& v) : m_v(v) {};
+        explicit ElementWiseView(const Derived& v) : m_v(v)
+        {
+        }
 
         /// <summary>
         /// Compute the elementwise product of this vector with another vector.
@@ -1312,6 +1317,7 @@ T VectorBase<Derived, T>::min() const
 template <typename Derived, typename T>
 void VectorBase<Derived, T>::normalize()
 {
+    static_assert(std::is_floating_point_v<T>, "normalize() is only supported for floating-point vector types.");
     const double n = norm();
     IL_CHECK(n != 0.0, "Cannot normalize a zero vector.");
 
