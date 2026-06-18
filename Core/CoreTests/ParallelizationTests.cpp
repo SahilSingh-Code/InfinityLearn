@@ -41,6 +41,10 @@ TEST_CASE("oneTBB can query default concurrency", "[Core][Parallelization]")
 TEST_CASE("oneTBB parallel_for visits every index exactly once", "[Core][Parallelization]")
 {
     std::vector<std::atomic<int>> visit_counts(kNumValues);
+    for (auto& c : visit_counts)
+    {
+        c.store(0, std::memory_order_relaxed);
+    }
 
     parallel_for(blocked_range<std::size_t>(0, kNumValues),
                  [&](const blocked_range<std::size_t>& range)
@@ -82,6 +86,10 @@ TEST_CASE("oneTBB parallel_for supports blocked ranges with grain size", "[Core]
     constexpr std::size_t grain_size = 256;
 
     std::vector<std::atomic<int>> visit_counts(kNumValues);
+    for (auto& c : visit_counts)
+    {
+        c.store(0, std::memory_order_relaxed);
+    }
 
     parallel_for(blocked_range<std::size_t>(0, kNumValues, grain_size),
                  [&](const blocked_range<std::size_t>& range)
@@ -144,6 +152,10 @@ TEST_CASE("Parallel::parallelFor visits every index exactly once through blocks"
 {
     constexpr ILP::Index num_values = 100000;
     std::vector<std::atomic<int>> visit_counts(num_values);
+    for (auto& c : visit_counts)
+    {
+        c.store(0, std::memory_order_relaxed);
+    }
 
     ILP::parallelFor(0, num_values,
                      [&](ILP::Range range)
@@ -167,6 +179,10 @@ TEST_CASE("Parallel::isolatedParallelFor visits every index exactly once", "[Cor
 {
     constexpr ILP::Index num_values = 100000;
     std::vector<std::atomic<int>> visit_counts(num_values);
+    for (auto& c : visit_counts)
+    {
+        c.store(0, std::memory_order_relaxed);
+    }
 
     ILP::isolatedParallelFor(0, num_values,
                              [&](ILP::Index i) { visit_counts[i].fetch_add(1, std::memory_order_relaxed); });

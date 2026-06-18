@@ -6,7 +6,7 @@
 #
 # This CMakeLists describes the overall project configuration for the InfinityLearn project.
 #--------------------------------------------------------------------------------------------
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.21)
 
 project("InfinityLearn")
 
