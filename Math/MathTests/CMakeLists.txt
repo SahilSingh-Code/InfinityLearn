@@ -10,12 +10,14 @@
 #--------------------------------------------------------------------------------------------
 
 add_executable(MathTests
+    VectorTests.cpp
 )
 
 target_link_libraries(MathTests
     PRIVATE
         Core
         CoreTestUtils
+        Catch2::Catch2WithMain
 )
 
 include(Catch)

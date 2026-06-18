@@ -13,6 +13,7 @@ project(Math)
 
 # Create a static library for the Math module
 add_library(Math STATIC
+    Vectors.h
    )
 
 # Include the current source directory for header files

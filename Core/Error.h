@@ -18,16 +18,44 @@ enum class ErrorFailureMode
     Throw
 };
 
-[[noreturn]] void HandleCheckFailure(const char* expression, const char* file,
-                                     int line, const char* function,
-                                     const std::string& message,
-                                     ErrorFailureMode mode);
+[[noreturn]] void HandleCheckFailure(const char* expression, const char* file, int line, const char* function,
+                                     const std::string& message, ErrorFailureMode mode);
 
-[[noreturn]] void HandleUnreachable(const char* file, int line,
-                                    const char* function,
-                                    const std::string& message);
+[[noreturn]] void HandleUnreachable(const char* file, int line, const char* function, const std::string& message);
 
-}  // namespace InfinityLearn
+// -----------------------------------------------------------------------------
+// Error logging suppression
+// -----------------------------------------------------------------------------
+//
+// These utilities suppress the printing/logging side of error failures, but they
+// do not suppress the actual failure behavior. Checks still throw or abort based
+// on their selected ErrorFailureMode.
+
+void PushErrorLoggingSuppression();
+void PopErrorLoggingSuppression();
+bool IsErrorLoggingSuppressed();
+
+class ScopedErrorLoggingSuppression
+{
+   public:
+    ScopedErrorLoggingSuppression()
+    {
+        PushErrorLoggingSuppression();
+    }
+
+    ~ScopedErrorLoggingSuppression()
+    {
+        PopErrorLoggingSuppression();
+    }
+
+    ScopedErrorLoggingSuppression(const ScopedErrorLoggingSuppression&) = delete;
+    ScopedErrorLoggingSuppression& operator=(const ScopedErrorLoggingSuppression&) = delete;
+
+    ScopedErrorLoggingSuppression(ScopedErrorLoggingSuppression&&) = delete;
+    ScopedErrorLoggingSuppression& operator=(ScopedErrorLoggingSuppression&&) = delete;
+};
+
+} // namespace InfinityLearn
 
 // -----------------------------------------------------------------------------
 // Default compile definitions
@@ -62,12 +90,11 @@ enum class ErrorFailureMode
             return il_error_oss.str();       \
         }())
 
-#define IL_HANDLE_CHECK_FAILURE(condition, message_expr, failure_mode) \
-    do                                                                 \
-    {                                                                  \
-        ::InfinityLearn::HandleCheckFailure(                           \
-            #condition, __FILE__, __LINE__, __func__,                  \
-            IL_MAKE_ERROR_MESSAGE(message_expr), failure_mode);        \
+#define IL_HANDLE_CHECK_FAILURE(condition, message_expr, failure_mode)                          \
+    do                                                                                          \
+    {                                                                                           \
+        ::InfinityLearn::HandleCheckFailure(#condition, __FILE__, __LINE__, __func__,           \
+                                            IL_MAKE_ERROR_MESSAGE(message_expr), failure_mode); \
     } while (false)
 
 // -----------------------------------------------------------------------------
@@ -76,14 +103,13 @@ enum class ErrorFailureMode
 
 #if IL_ENABLE_ASSERTS
 
-#define IL_ASSERT(condition, message_expr)                                     \
-    do                                                                         \
-    {                                                                          \
-        if (!(condition))                                                      \
-        {                                                                      \
-            IL_HANDLE_CHECK_FAILURE(condition, message_expr,                   \
-                                    ::InfinityLearn::ErrorFailureMode::Abort); \
-        }                                                                      \
+#define IL_ASSERT(condition, message_expr)                                                              \
+    do                                                                                                  \
+    {                                                                                                   \
+        if (!(condition))                                                                               \
+        {                                                                                               \
+            IL_HANDLE_CHECK_FAILURE(condition, message_expr, ::InfinityLearn::ErrorFailureMode::Abort); \
+        }                                                                                               \
     } while (false)
 
 #else
@@ -98,14 +124,13 @@ enum class ErrorFailureMode
 
 #if IL_ENABLE_DEBUG_ASSERTS
 
-#define IL_ASSERT_DEBUG(condition, message_expr)                               \
-    do                                                                         \
-    {                                                                          \
-        if (!(condition))                                                      \
-        {                                                                      \
-            IL_HANDLE_CHECK_FAILURE(condition, message_expr,                   \
-                                    ::InfinityLearn::ErrorFailureMode::Abort); \
-        }                                                                      \
+#define IL_ASSERT_DEBUG(condition, message_expr)                                                        \
+    do                                                                                                  \
+    {                                                                                                   \
+        if (!(condition))                                                                               \
+        {                                                                                               \
+            IL_HANDLE_CHECK_FAILURE(condition, message_expr, ::InfinityLearn::ErrorFailureMode::Abort); \
+        }                                                                                               \
     } while (false)
 
 #else
@@ -118,40 +143,50 @@ enum class ErrorFailureMode
 
 #endif
 
-#define IL_CHECK(condition, message_expr)                                      \
-    do                                                                         \
-    {                                                                          \
-        if (!(condition))                                                      \
-        {                                                                      \
-            IL_HANDLE_CHECK_FAILURE(condition, message_expr,                   \
-                                    ::InfinityLearn::ErrorFailureMode::Throw); \
-        }                                                                      \
+#define IL_CHECK(condition, message_expr)                                                               \
+    do                                                                                                  \
+    {                                                                                                   \
+        if (!(condition))                                                                               \
+        {                                                                                               \
+            IL_HANDLE_CHECK_FAILURE(condition, message_expr, ::InfinityLearn::ErrorFailureMode::Throw); \
+        }                                                                                               \
     } while (false)
 
-#define IL_VERIFY(condition, message_expr)                                     \
-    do                                                                         \
-    {                                                                          \
-        const bool il_verify_result = static_cast<bool>(condition);            \
-        if (!il_verify_result)                                                 \
-        {                                                                      \
-            IL_HANDLE_CHECK_FAILURE(condition, message_expr,                   \
-                                    ::InfinityLearn::ErrorFailureMode::Abort); \
-        }                                                                      \
+#define IL_VERIFY(condition, message_expr)                                                              \
+    do                                                                                                  \
+    {                                                                                                   \
+        const bool il_verify_result = static_cast<bool>(condition);                                     \
+        if (!il_verify_result)                                                                          \
+        {                                                                                               \
+            IL_HANDLE_CHECK_FAILURE(condition, message_expr, ::InfinityLearn::ErrorFailureMode::Abort); \
+        }                                                                                               \
     } while (false)
 
-#define IL_REQUIRE(condition, message_expr) \
-    IL_ASSERT(condition, "Precondition failed: " << message_expr)
+#define IL_REQUIRE(condition, message_expr) IL_ASSERT(condition, "Precondition failed: " << message_expr)
 
-#define IL_ENSURE(condition, message_expr) \
-    IL_ASSERT(condition, "Postcondition failed: " << message_expr)
+#define IL_ENSURE(condition, message_expr) IL_ASSERT(condition, "Postcondition failed: " << message_expr)
 
-#define IL_UNREACHABLE(message_expr)              \
-    do                                            \
-    {                                             \
-        ::InfinityLearn::HandleUnreachable(       \
-            __FILE__, __LINE__, __func__,         \
-            IL_MAKE_ERROR_MESSAGE(message_expr)); \
+#define IL_UNREACHABLE(message_expr)                                                                           \
+    do                                                                                                         \
+    {                                                                                                          \
+        ::InfinityLearn::HandleUnreachable(__FILE__, __LINE__, __func__, IL_MAKE_ERROR_MESSAGE(message_expr)); \
     } while (false)
 
-#define IL_NOT_IMPLEMENTED(message_expr) \
-    IL_UNREACHABLE("Not implemented: " << message_expr)
+#define IL_NOT_IMPLEMENTED(message_expr) IL_UNREACHABLE("Not implemented: " << message_expr)
+
+// -----------------------------------------------------------------------------
+// Error logging suppression macros
+// -----------------------------------------------------------------------------
+
+#define IL_CONCAT_IMPL(a, b) a##b
+#define IL_CONCAT(a, b) IL_CONCAT_IMPL(a, b)
+
+#define IL_SUPPRESS_ERROR_LOGGING_SCOPE() \
+    const ::InfinityLearn::ScopedErrorLoggingSuppression IL_CONCAT(il_error_logging_suppression_, __LINE__)
+
+#define IL_SUPPRESS_ERROR_LOGGING_FOR_THIS_FILE()                                    \
+    namespace                                                                        \
+    {                                                                                \
+    [[maybe_unused]] const ::InfinityLearn::ScopedErrorLoggingSuppression IL_CONCAT( \
+        il_error_logging_suppression_for_file_, __LINE__);                           \
+    }

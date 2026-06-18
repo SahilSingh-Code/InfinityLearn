@@ -4,16 +4,14 @@
 // Core vector utilities for InfinityLearn.
 //-----------------------------------------------------------------------------------------------------------------------
 
-#include "Core/Error.h"
-#include "Core/Parallelization.h"
-#include <algorithm>        // std::clamp, std::max, std::min
-#include <cmath>            // std::abs, std::cos, std::exp, std::isfinite, std::isnan, std::log, std::log10,
-                            // std::pow, std::sin, std::sqrt, std::tan
-#include <cstddef>          // std::size_t
-#include <initializer_list> // std::initializer_list
-#include <limits>           // std::numeric_limits
-#include <utility>          // std::move, std::forward
-#include <vector>           // std::vector
+#include <Core/Error.h>           // IL_CHECK
+#include <Core/Parallelization.h> // Parallel::Range, Parallel::parallelFor, etc
+#include <algorithm>              // std::clamp, std::max, std::min
+#include <cmath>                  // std::abs, std::cos, std::exp, std::isfinite, std::isnan, std::log, std::log10,
+                                  // std::pow, std::sin, std::sqrt, std::tan
+#include <initializer_list>       // std::initializer_list
+#include <utility>                // std::move, std::forward
+#include <vector>                 // std::vector
 
 namespace InfinityLearn
 {
@@ -671,7 +669,7 @@ class StaticVector : public VectorBase<StaticVector<T, N>, T>
     /// <param name="values">The values to initialize the vector with.</param>
     StaticVector(std::initializer_list<T> values) : m_data{}
     {
-        IL_ASSERT(values.size() == N, "StaticVector initializer list must match vector size.");
+        IL_CHECK(values.size() == N, "StaticVector initializer list must match vector size.");
         const T* valuesData = values.begin();
         Parallel::isolatedParallelFor(0, N, [&](const Parallel::Index& i) { m_data[i] = valuesData[i]; });
     }
@@ -693,7 +691,7 @@ class StaticVector : public VectorBase<StaticVector<T, N>, T>
     /// <returns>The value of the vector at that index.</returns>
     T& coeff(std::size_t index)
     {
-        IL_ASSERT(index < N, "Attempting to index a vector outside of its size.");
+        IL_CHECK(index < N, "Attempting to index a vector outside of its size.");
         return m_data[index];
     }
 
@@ -705,7 +703,7 @@ class StaticVector : public VectorBase<StaticVector<T, N>, T>
     /// <returns>A const reference to that value.</returns>
     const T& coeff(std::size_t index) const
     {
-        IL_ASSERT(index < N, "Attempting to index a vector outside of its size.");
+        IL_CHECK(index < N, "Attempting to index a vector outside of its size.");
         return m_data[index];
     }
 
@@ -749,6 +747,26 @@ class StaticVector : public VectorBase<StaticVector<T, N>, T>
         StaticVector result;
         result.fill(T{1});
         return result;
+    }
+
+    /// <summary>
+    /// Equality operator that checks if two static vectors are exactly equal.
+    /// </summary>
+    /// <param name="other">The vector to compare against.</param>
+    /// <returns>True if both vectors have identical entries.</returns>
+    bool operator==(const StaticVector& other) const
+    {
+        return VectorBase<StaticVector<T, N>, T>::operator==(other);
+    }
+
+    /// <summary>
+    /// Inequality operator that checks if two static vectors are not exactly equal.
+    /// </summary>
+    /// <param name="other">The vector to compare against.</param>
+    /// <returns>True if the vectors differ.</returns>
+    bool operator!=(const StaticVector& other) const
+    {
+        return !(*this == other);
     }
 
    private:
@@ -897,7 +915,7 @@ class DynamicVector : public VectorBase<DynamicVector<T>, T>
     /// </summary>
     void popBack()
     {
-        IL_ASSERT(!m_data.empty(), "Cannot pop from an empty DynamicVector.");
+        IL_CHECK(!m_data.empty(), "Cannot pop from an empty DynamicVector.");
         m_data.pop_back();
     }
 
@@ -917,7 +935,7 @@ class DynamicVector : public VectorBase<DynamicVector<T>, T>
     /// <returns>The value of the vector at that index.</returns>
     T& coeff(std::size_t index)
     {
-        IL_ASSERT(index < m_data.size(), "Attempting to index a vector outside of its size.");
+        IL_CHECK(index < m_data.size(), "Attempting to index a vector outside of its size.");
         return m_data[index];
     }
 
@@ -929,7 +947,7 @@ class DynamicVector : public VectorBase<DynamicVector<T>, T>
     /// <returns>A const reference to that value.</returns>
     const T& coeff(std::size_t index) const
     {
-        IL_ASSERT(index < m_data.size(), "Attempting to index a vector outside of its size.");
+        IL_CHECK(index < m_data.size(), "Attempting to index a vector outside of its size.");
         return m_data[index];
     }
 
@@ -974,6 +992,26 @@ class DynamicVector : public VectorBase<DynamicVector<T>, T>
         DynamicVector result(size);
         result.fill(T{1});
         return result;
+    }
+
+    /// <summary>
+    /// Equality operator that checks if two dynamic vectors are exactly equal.
+    /// </summary>
+    /// <param name="other">The vector to compare against.</param>
+    /// <returns>True if both vectors have the same size and identical entries.</returns>
+    bool operator==(const DynamicVector& other) const
+    {
+        return VectorBase<DynamicVector<T>, T>::operator==(other);
+    }
+
+    /// <summary>
+    /// Inequality operator that checks if two dynamic vectors are not exactly equal.
+    /// </summary>
+    /// <param name="other">The vector to compare against.</param>
+    /// <returns>True if the vectors differ.</returns>
+    bool operator!=(const DynamicVector& other) const
+    {
+        return !(*this == other);
     }
 
    private:
@@ -1106,7 +1144,7 @@ Derived VectorBase<Derived, T>::operator+(const Derived& other) const
 template <typename Derived, typename T>
 Derived& VectorBase<Derived, T>::operator+=(const Derived& other)
 {
-    IL_ASSERT(size() == other.size(), "Vector sizes must match for addition.");
+    IL_CHECK(size() == other.size(), "Vector sizes must match for addition.");
 
     Parallel::isolatedParallelFor(0, size(), [&](const Parallel::Index& i) { derived().coeff(i) += other.coeff(i); });
     return derived();
@@ -1123,7 +1161,7 @@ Derived VectorBase<Derived, T>::operator-(const Derived& other) const
 template <typename Derived, typename T>
 Derived& VectorBase<Derived, T>::operator-=(const Derived& other)
 {
-    IL_ASSERT(size() == other.size(), "Vector sizes must match for subtraction.");
+    IL_CHECK(size() == other.size(), "Vector sizes must match for subtraction.");
 
     Parallel::isolatedParallelFor(0, size(), [&](const Parallel::Index& i) { derived().coeff(i) -= other.coeff(i); });
     return derived();
@@ -1155,7 +1193,7 @@ Derived& VectorBase<Derived, T>::operator*=(const T& scalar)
 template <typename Derived, typename T>
 Derived& VectorBase<Derived, T>::operator/=(const T& scalar)
 {
-    IL_ASSERT(scalar != T{}, "Division by zero.");
+    IL_CHECK(scalar != T{}, "Division by zero.");
 
     Parallel::isolatedParallelFor(0, size(), [&](const Parallel::Index& i) { derived().coeff(i) /= scalar; });
     return derived();
@@ -1172,7 +1210,7 @@ Derived VectorBase<Derived, T>::operator-() const
 template <typename Derived, typename T>
 T VectorBase<Derived, T>::dot(const Derived& other) const
 {
-    IL_ASSERT(size() == other.size(), "Vector sizes must match for dot product.");
+    IL_CHECK(size() == other.size(), "Vector sizes must match for dot product.");
 
     return Parallel::parallelSum<T>(0, size(),
                                     [&](const Parallel::Index& i) { return derived().coeff(i) * other.coeff(i); });
@@ -1181,7 +1219,7 @@ T VectorBase<Derived, T>::dot(const Derived& other) const
 template <typename Derived, typename T>
 Derived VectorBase<Derived, T>::cross(const Derived& other) const
 {
-    IL_ASSERT(size() == 3 && other.size() == 3, "Cross product is only defined for 3D vectors.");
+    IL_CHECK(size() == 3 && other.size() == 3, "Cross product is only defined for 3D vectors.");
 
     return Derived{derived().coeff(1) * other.coeff(2) - derived().coeff(2) * other.coeff(1),
                    derived().coeff(2) * other.coeff(0) - derived().coeff(0) * other.coeff(2),
@@ -1191,7 +1229,7 @@ Derived VectorBase<Derived, T>::cross(const Derived& other) const
 template <typename Derived, typename T>
 Derived VectorBase<Derived, T>::projectOnto(const Derived& other) const
 {
-    IL_ASSERT(other.squaredNorm() != T{}, "Cannot project onto a zero vector.");
+    IL_CHECK(other.squaredNorm() != T{}, "Cannot project onto a zero vector.");
 
     return other * (dot(other) / other.squaredNorm());
 }
@@ -1258,7 +1296,7 @@ double VectorBase<Derived, T>::lengthSquared() const
 template <typename Derived, typename T>
 T VectorBase<Derived, T>::max() const
 {
-    IL_ASSERT(!empty(), "Cannot compute the maximum of an empty vector.");
+    IL_CHECK(!empty(), "Cannot compute the maximum of an empty vector.");
 
     return Parallel::parallelMax<T>(0, size(), [&](const Parallel::Index& i) { return derived().coeff(i); });
 }
@@ -1266,7 +1304,7 @@ T VectorBase<Derived, T>::max() const
 template <typename Derived, typename T>
 T VectorBase<Derived, T>::min() const
 {
-    IL_ASSERT(!empty(), "Cannot compute the minimum of an empty vector.");
+    IL_CHECK(!empty(), "Cannot compute the minimum of an empty vector.");
 
     return Parallel::parallelMin<T>(0, size(), [&](const Parallel::Index& i) { return derived().coeff(i); });
 }
@@ -1275,7 +1313,7 @@ template <typename Derived, typename T>
 void VectorBase<Derived, T>::normalize()
 {
     const double n = norm();
-    IL_ASSERT(n != 0.0, "Cannot normalize a zero vector.");
+    IL_CHECK(n != 0.0, "Cannot normalize a zero vector.");
 
     derived() /= static_cast<T>(n);
 }
@@ -1303,7 +1341,7 @@ T VectorBase<Derived, T>::product() const
 template <typename Derived, typename T>
 T VectorBase<Derived, T>::mean() const
 {
-    IL_ASSERT(!empty(), "Cannot compute the mean of an empty vector.");
+    IL_CHECK(!empty(), "Cannot compute the mean of an empty vector.");
 
     return sum() / static_cast<T>(size());
 }
@@ -1329,7 +1367,7 @@ typename VectorBase<Derived, T>::ElementWiseView VectorBase<Derived, T>::element
 template <typename Derived, typename T>
 Derived VectorBase<Derived, T>::ElementWiseView::product(const Derived& other) const
 {
-    IL_ASSERT(m_v.size() == other.size(), "Vector sizes must match for elementwise product.");
+    IL_CHECK(m_v.size() == other.size(), "Vector sizes must match for elementwise product.");
 
     Derived result = m_v;
     Parallel::isolatedParallelFor(0, m_v.size(),
@@ -1340,13 +1378,13 @@ Derived VectorBase<Derived, T>::ElementWiseView::product(const Derived& other) c
 template <typename Derived, typename T>
 Derived VectorBase<Derived, T>::ElementWiseView::quotient(const Derived& other) const
 {
-    IL_ASSERT(m_v.size() == other.size(), "Vector sizes must match for elementwise quotient.");
+    IL_CHECK(m_v.size() == other.size(), "Vector sizes must match for elementwise quotient.");
 
     Derived result = m_v;
     Parallel::isolatedParallelFor(0, m_v.size(),
                                   [&](const Parallel::Index& i)
                                   {
-                                      IL_ASSERT(other.coeff(i) != T{}, "Division by 0 in elementwise quotient.");
+                                      IL_CHECK(other.coeff(i) != T{}, "Division by 0 in elementwise quotient.");
                                       result.coeff(i) = m_v.coeff(i) / other.coeff(i);
                                   });
     return result;
@@ -1355,7 +1393,7 @@ Derived VectorBase<Derived, T>::ElementWiseView::quotient(const Derived& other) 
 template <typename Derived, typename T>
 Derived VectorBase<Derived, T>::ElementWiseView::min(const Derived& other) const
 {
-    IL_ASSERT(m_v.size() == other.size(), "Vector sizes must match for elementwise minimum.");
+    IL_CHECK(m_v.size() == other.size(), "Vector sizes must match for elementwise minimum.");
 
     Derived result = m_v;
     Parallel::isolatedParallelFor(
@@ -1366,7 +1404,7 @@ Derived VectorBase<Derived, T>::ElementWiseView::min(const Derived& other) const
 template <typename Derived, typename T>
 Derived VectorBase<Derived, T>::ElementWiseView::max(const Derived& other) const
 {
-    IL_ASSERT(m_v.size() == other.size(), "Vector sizes must match for elementwise maximum.");
+    IL_CHECK(m_v.size() == other.size(), "Vector sizes must match for elementwise maximum.");
 
     Derived result = m_v;
     Parallel::isolatedParallelFor(
@@ -1377,7 +1415,7 @@ Derived VectorBase<Derived, T>::ElementWiseView::max(const Derived& other) const
 template <typename Derived, typename T>
 Derived VectorBase<Derived, T>::ElementWiseView::pow(const Derived& other) const
 {
-    IL_ASSERT(m_v.size() == other.size(), "Vector sizes must match for elementwise power.");
+    IL_CHECK(m_v.size() == other.size(), "Vector sizes must match for elementwise power.");
 
     Derived result = m_v;
     Parallel::isolatedParallelFor(
@@ -1401,8 +1439,8 @@ Derived VectorBase<Derived, T>::ElementWiseView::sqrt() const
     Parallel::isolatedParallelFor(0, m_v.size(),
                                   [&](const Parallel::Index& i)
                                   {
-                                      IL_ASSERT(m_v.coeff(i) >= 0,
-                                                "Attempted to take the square root of a negative number.");
+                                      IL_CHECK(m_v.coeff(i) >= 0,
+                                               "Attempted to take the square root of a negative number.");
                                       result.coeff(i) = std::sqrt(m_v.coeff(i));
                                   });
     return result;
@@ -1437,7 +1475,7 @@ Derived VectorBase<Derived, T>::ElementWiseView::inverse() const
     Parallel::isolatedParallelFor(0, m_v.size(),
                                   [&](const Parallel::Index& i)
                                   {
-                                      IL_ASSERT(m_v.coeff(i) != T{}, "Division by zero in element-wise inverse.");
+                                      IL_CHECK(m_v.coeff(i) != T{}, "Division by zero in element-wise inverse.");
                                       result.coeff(i) = T{1} / m_v.coeff(i);
                                   });
     return result;
@@ -1459,7 +1497,7 @@ Derived VectorBase<Derived, T>::ElementWiseView::log() const
     Parallel::isolatedParallelFor(0, m_v.size(),
                                   [&](const Parallel::Index& i)
                                   {
-                                      IL_ASSERT(m_v.coeff(i) > 0, "Attempted to take the log of a number <= 0.");
+                                      IL_CHECK(m_v.coeff(i) > 0, "Attempted to take the log of a number <= 0.");
                                       result.coeff(i) = std::log(m_v.coeff(i));
                                   });
     return result;
@@ -1472,7 +1510,7 @@ Derived VectorBase<Derived, T>::ElementWiseView::log10() const
     Parallel::isolatedParallelFor(0, m_v.size(),
                                   [&](const Parallel::Index& i)
                                   {
-                                      IL_ASSERT(m_v.coeff(i) > 0, "Attempted to take the log of a number <= 0.");
+                                      IL_CHECK(m_v.coeff(i) > 0, "Attempted to take the log of a number <= 0.");
                                       result.coeff(i) = std::log10(m_v.coeff(i));
                                   });
     return result;
