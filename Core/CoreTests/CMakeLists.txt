@@ -23,5 +23,19 @@ target_link_libraries(CoreTests
         TBB::tbb
 )
 
+# Copy runtime DLL dependencies, such as oneTBB's tbb12_debug.dll/tbb12.dll,
+# beside CoreTests.exe so Catch2 can run the executable during test discovery.
+add_custom_command(
+    TARGET CoreTests
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        $<TARGET_RUNTIME_DLLS:CoreTests>
+        $<TARGET_FILE_DIR:CoreTests>
+    COMMAND_EXPAND_LISTS
+)
+
+
 include(Catch)
-catch_discover_tests(CoreTests)
+catch_discover_tests(CoreTests
+    DISCOVERY_MODE PRE_TEST
+)
