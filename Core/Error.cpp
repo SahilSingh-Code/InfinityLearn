@@ -1,4 +1,5 @@
 #include "Error.h"
+#include <atomic>
 #include <cstdlib>
 #include <iostream>
 #include <sstream>
@@ -14,8 +15,7 @@ namespace InfinityLearn
 namespace
 {
 
-std::string BuildCheckFailureMessage(const char* expression, const char* file,
-                                     int line, const char* function,
+std::string BuildCheckFailureMessage(const char* expression, const char* file, int line, const char* function,
                                      const std::string& message)
 {
     std::ostringstream oss;
@@ -39,17 +39,22 @@ std::string BuildCheckFailureMessage(const char* expression, const char* file,
     std::abort();
 }
 
-}  // namespace
-
-[[noreturn]] void HandleCheckFailure(const char* expression, const char* file,
-                                     int line, const char* function,
-                                     const std::string& message,
-                                     ErrorFailureMode mode)
+std::atomic<int>& ErrorLoggingSuppressionDepth()
 {
-    const std::string fullMessage =
-        BuildCheckFailureMessage(expression, file, line, function, message);
+    static std::atomic<int> depth{0};
+    return depth;
+}
 
-    std::cerr << fullMessage << std::endl;
+} // namespace
+
+[[noreturn]] void HandleCheckFailure(const char* expression, const char* file, int line, const char* function,
+                                     const std::string& message, ErrorFailureMode mode)
+{
+    const std::string fullMessage = BuildCheckFailureMessage(expression, file, line, function, message);
+    if (!InfinityLearn::IsErrorLoggingSuppressed())
+    {
+        std::cerr << fullMessage << std::endl;
+    }
 
     if (mode == ErrorFailureMode::Throw)
     {
@@ -59,12 +64,29 @@ std::string BuildCheckFailureMessage(const char* expression, const char* file,
     AbortProgram();
 }
 
-[[noreturn]] void HandleUnreachable(const char* file, int line,
-                                    const char* function,
-                                    const std::string& message)
+[[noreturn]] void HandleUnreachable(const char* file, int line, const char* function, const std::string& message)
 {
-    HandleCheckFailure("IL_UNREACHABLE", file, line, function, message,
-                       ErrorFailureMode::Abort);
+    HandleCheckFailure("IL_UNREACHABLE", file, line, function, message, ErrorFailureMode::Abort);
 }
 
-}  // namespace InfinityLearn
+void PushErrorLoggingSuppression()
+{
+    ErrorLoggingSuppressionDepth().fetch_add(1, std::memory_order_relaxed);
+}
+
+void PopErrorLoggingSuppression()
+{
+    const int previous_depth = ErrorLoggingSuppressionDepth().fetch_sub(1, std::memory_order_relaxed);
+
+    if (previous_depth <= 0)
+    {
+        ErrorLoggingSuppressionDepth().store(0, std::memory_order_relaxed);
+    }
+}
+
+bool IsErrorLoggingSuppressed()
+{
+    return ErrorLoggingSuppressionDepth().load(std::memory_order_relaxed) > 0;
+}
+
+} // namespace InfinityLearn

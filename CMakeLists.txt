@@ -18,3 +18,4 @@ include(cmake/ProjectConfig.cmake)
 
 # Sub-projects
 add_subdirectory(Core)
+add_subdirectory(Math)
