@@ -10,8 +10,9 @@
 #--------------------------------------------------------------------------------------------
 
 add_executable(CoreTests
-    "RandomishTests.cpp"
-    "TimerTests.cpp"
+    ParallelizationTests.cpp
+    RandomishTests.cpp
+    TimerTests.cpp
 )
 
 target_link_libraries(CoreTests
@@ -19,7 +20,24 @@ target_link_libraries(CoreTests
         Core
         CoreTestUtils
         Catch2::Catch2WithMain
+        TBB::tbb
 )
 
+# Copy runtime DLL dependencies, such as oneTBB's tbb12_debug.dll/tbb12.dll,
+# beside CoreTests.exe so Catch2 can run the executable during test discovery.
+if(WIN32)
+    add_custom_command(
+        TARGET CoreTests
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            $<TARGET_RUNTIME_DLLS:CoreTests>
+            $<TARGET_FILE_DIR:CoreTests>
+        COMMAND_EXPAND_LISTS
+    )
+endif()
+
+
 include(Catch)
-catch_discover_tests(CoreTests)
+catch_discover_tests(CoreTests
+    DISCOVERY_MODE PRE_TEST
+)
