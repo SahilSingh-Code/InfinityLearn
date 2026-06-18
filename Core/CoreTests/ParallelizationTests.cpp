@@ -36,7 +36,7 @@ TEST_CASE("oneTBB can query default concurrency", "[Core][Parallelization]")
 {
     const int concurrency = info::default_concurrency();
     REQUIRE(concurrency > 0);
-} // namespace InfinityLearn::Parallel
+}
 
 TEST_CASE("oneTBB parallel_for visits every index exactly once", "[Core][Parallelization]")
 {
@@ -121,6 +121,7 @@ TEST_CASE("Parallel::Range reports size and empty state correctly", "[Core][Para
 
     {
         const ILP::Range range{10, 5};
+        REQUIRE(range.size() == 0);
         REQUIRE(range.empty());
     }
 }

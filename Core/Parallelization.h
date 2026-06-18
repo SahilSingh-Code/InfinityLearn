@@ -12,6 +12,7 @@
 #include "Error.h"                      // IL_ASSERT
 #include <algorithm>                    // std::max
 #include <cstddef>                      // std::size_t
+#include <limits>                       // std::numeric_limits
 #include <oneapi/tbb/blocked_range.h>   // oneapi::tbb::blocked_range
 #include <oneapi/tbb/parallel_for.h>    // oneapi::tbb::parallel_for
 #include <oneapi/tbb/parallel_reduce.h> // oneapi::tbb::parallel_reduce
@@ -34,7 +35,7 @@ struct Range
 
     [[nodiscard]] Index size() const noexcept
     {
-        return end - begin;
+        return (begin < end) ? (end - begin) : 0;
     }
 
     [[nodiscard]] bool empty() const noexcept
