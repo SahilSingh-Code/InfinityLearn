@@ -11,17 +11,17 @@
 # Define the Math project
 project(Math)
 
-# Create a static library for the Math module
-add_library(Math STATIC
+# Create an interface library for the Math module
+add_library(Math INTERFACE
     Vectors.h
    )
 
 # Include the current source directory for header files
-target_include_directories(Math PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(Math INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Link the Core library with the InfinityLearnConfig interface library to inherit the compile definitions
 target_link_libraries(Math
-    PUBLIC
+    INTERFACE
         Core
 )
 # Add the MathTests subdirectory for unit tests related to the Math module

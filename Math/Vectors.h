@@ -570,8 +570,7 @@ class VectorBase
     VectorBase() = default;
 
     /// <summary>
-    /// A default destructor that will clean up the vector when it goes out of scope. Since this class only contains a
-    /// fixed-size array, the default destructor is sufficient for cleaning up the vector.
+    /// A default destructor that will clean up the vector when it goes out of scope.
     /// </summary>
     ~VectorBase() = default;
 
