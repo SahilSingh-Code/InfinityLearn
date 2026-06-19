@@ -1,4 +1,4 @@
-# Design Principles
+# Design Principles {#design_principles}
 
 InfinityLearn is a machine learning systems project. The goal is not breadth of algorithms, but depth of understanding, correctness, and engineering quality. The idea is that any new algorithms should be easy to add once the core principles are established.
 
