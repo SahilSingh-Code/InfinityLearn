@@ -20,6 +20,12 @@
 
 namespace InfinityLearn
 {
+
+/// <summary>
+/// Parallel execution utilities for the InfinityLearn project. These are small wrapper functions around oneTBB that
+/// provide a simple interface for parallel execution and reduction across the project, and allow us to avoid depending
+/// directly on oneTBB in the rest of the codebase.
+/// </summary>
 namespace Parallel
 {
 

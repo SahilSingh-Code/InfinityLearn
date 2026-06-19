@@ -25,10 +25,13 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Install Doxygen
+      - name: Install Doxygen 1.17.0
         run: |
-          sudo apt-get update
-          sudo apt-get install -y doxygen graphviz
+          DOXYGEN_VERSION=1.17.0
+          wget -q https://www.doxygen.nl/files/doxygen-${DOXYGEN_VERSION}.linux.bin.tar.gz
+          tar -xzf doxygen-${DOXYGEN_VERSION}.linux.bin.tar.gz
+          sudo make -C doxygen-${DOXYGEN_VERSION} install
+          doxygen --version
 
       - name: Build documentation
         run: doxygen docs/Doxyfile
