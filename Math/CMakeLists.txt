@@ -13,6 +13,7 @@ project(Math)
 
 # Create an interface library for the Math module
 add_library(Math INTERFACE
+    Matrix.h
     Vectors.h
    )
 

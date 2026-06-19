@@ -12,7 +12,7 @@
 #include <cmath>                  // std::abs, std::cos, std::exp, std::isfinite, std::isnan, std::log, std::log10,
                                   // std::pow, std::sin, std::sqrt, std::tan
 #include <initializer_list>       // std::initializer_list
-#include <type_traits>            //std::is_floating_point_v<
+#include <type_traits>            // std::is_floating_point_v
 #include <utility>                // std::move, std::forward
 #include <vector>                 // std::vector
 
