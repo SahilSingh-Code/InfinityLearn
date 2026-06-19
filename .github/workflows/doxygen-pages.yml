@@ -30,11 +30,16 @@ jobs:
           DOXYGEN_VERSION=1.17.0
           wget -q https://www.doxygen.nl/files/doxygen-${DOXYGEN_VERSION}.linux.bin.tar.gz
           tar -xzf doxygen-${DOXYGEN_VERSION}.linux.bin.tar.gz
-          echo "${PWD}/doxygen-${DOXYGEN_VERSION}/bin" >> "${GITHUB_PATH}"
-          doxygen --version
+
+          DOXYGEN_DIR="$PWD/doxygen-${DOXYGEN_VERSION}"
+          echo "$DOXYGEN_DIR/bin" >> "$GITHUB_PATH"
+
+          "$DOXYGEN_DIR/bin/doxygen" --version
 
       - name: Build documentation
-        run: doxygen docs/Doxyfile
+        run: |
+          doxygen --version
+          doxygen docs/Doxyfile
 
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v4
