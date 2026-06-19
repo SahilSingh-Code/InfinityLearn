@@ -1,0 +1,133 @@
+# -----------------------------------------------------------------------------
+# InfinityLearn Doxygen Configuration
+# -----------------------------------------------------------------------------
+
+PROJECT_NAME           = "InfinityLearn"
+PROJECT_BRIEF          = "A C++ machine learning library built from first principles."
+
+# -----------------------------------------------------------------------------
+# Output
+# -----------------------------------------------------------------------------
+
+OUTPUT_DIRECTORY       = docs/build
+GENERATE_HTML          = YES
+HTML_OUTPUT            = html
+GENERATE_LATEX         = NO
+
+# -----------------------------------------------------------------------------
+# Inputs
+# -----------------------------------------------------------------------------
+
+INPUT                  = docs/mainpage.md \
+                         docs/design_principles.md \
+                         docs/roadmap.md \
+                         README.md \
+                         Core \
+                         Math
+
+RECURSIVE              = YES
+
+# Keep this focused on public-facing API docs.
+# Avoid .cpp files for now, because they pull in tests and implementation details.
+FILE_PATTERNS          = *.h \
+                         *.hpp \
+                         *.hh \
+                         *.hxx \
+                         *.inl \
+                         *.md
+
+# Exclude tests and internal test helpers from public documentation.
+EXCLUDE_PATTERNS       = */CoreTests/* \
+                         */MathTests/* \
+                         */TestUtils/*
+
+# -----------------------------------------------------------------------------
+# Markdown
+# -----------------------------------------------------------------------------
+
+MARKDOWN_SUPPORT       = YES
+USE_MDFILE_AS_MAINPAGE = docs/mainpage.md
+
+# -----------------------------------------------------------------------------
+# Documentation extraction
+# -----------------------------------------------------------------------------
+
+EXTRACT_ALL            = NO
+EXTRACT_PRIVATE        = NO
+EXTRACT_STATIC         = YES
+EXTRACT_LOCAL_CLASSES  = NO
+
+HIDE_UNDOC_MEMBERS     = NO
+HIDE_UNDOC_CLASSES     = NO
+HIDE_UNDOC_NAMESPACES  = NO
+
+# -----------------------------------------------------------------------------
+# File-based API documentation
+# -----------------------------------------------------------------------------
+
+SHOW_FILES             = NO
+SHOW_NAMESPACES        = NO
+SHOW_INCLUDE_FILES     = NO
+SHOW_USED_FILES        = NO
+
+# -----------------------------------------------------------------------------
+# Source visibility
+#
+# The hosted documentation should be an API reference, not a source-code mirror.
+# The source itself is already available in GitHub.
+# -----------------------------------------------------------------------------
+
+SOURCE_BROWSER         = NO
+INLINE_SOURCES         = NO
+VERBATIM_HEADERS       = NO
+REFERENCES_LINK_SOURCE = NO
+REFERENCED_BY_RELATION = NO
+REFERENCES_RELATION    = NO
+
+# -----------------------------------------------------------------------------
+# Ordering / readability
+# -----------------------------------------------------------------------------
+
+SORT_BRIEF_DOCS        = NO
+SORT_MEMBER_DOCS       = NO
+SORT_MEMBERS_CTORS_1ST = YES
+
+# -----------------------------------------------------------------------------
+# Paths
+# -----------------------------------------------------------------------------
+
+FULL_PATH_NAMES        = NO
+STRIP_FROM_PATH        = .
+
+# -----------------------------------------------------------------------------
+# HTML behavior
+# -----------------------------------------------------------------------------
+
+GENERATE_TREEVIEW      = YES
+HTML_DYNAMIC_SECTIONS  = YES
+SEARCHENGINE           = YES
+DISABLE_INDEX          = NO
+
+# -----------------------------------------------------------------------------
+# Diagrams
+#
+# Keep disabled for now. This avoids local Graphviz/dot failures and keeps the
+# generated docs lightweight. Re-enable later if you want inheritance diagrams.
+# -----------------------------------------------------------------------------
+
+HAVE_DOT               = NO
+CLASS_GRAPH            = NO
+COLLABORATION_GRAPH    = NO
+INCLUDE_GRAPH          = NO
+INCLUDED_BY_GRAPH      = NO
+CALL_GRAPH             = NO
+CALLER_GRAPH           = NO
+DIRECTORY_GRAPH        = NO
+
+# -----------------------------------------------------------------------------
+# Warnings
+# -----------------------------------------------------------------------------
+
+WARNINGS               = YES
+WARN_IF_UNDOCUMENTED   = NO
+WARN_AS_ERROR          = NO
